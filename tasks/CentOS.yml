@@ -2,6 +2,10 @@
   - name: Ensure source control providers are installed
     include_role:
       name: ccdc-scm-providers
+      
+  - name: Ensure a recent Python is installed
+    include_role:
+      name: ccdc-system-python
 
   - name: Install packer
     unarchive:
