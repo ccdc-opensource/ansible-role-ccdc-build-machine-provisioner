@@ -1,7 +1,0 @@
----
-  virtualbox_version: 6.1
-  packer_version: 1.5.4
-  vagrant_version: 2.2.7
-  debian_codename: bionic
-  provisioning_user: vagrant
-  provisioning_repo_destination: /home/{{ provisioning_user }}/ccdc-provisioning
