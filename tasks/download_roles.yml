@@ -3,6 +3,7 @@
     git:
       repo: "{{ repository_url }}"
       dest: "{{ provisioning_repo_destination }}"
+      accept_hostkey: yes
     loop:
       - 'git@ssh.dev.azure.com:v3/ccdc/build-systems/packer-ccdc-basebox-macosx-10.15'
       - 'git@ssh.dev.azure.com:v3/ccdc/build-systems/packer-ccdc-basebox-centos-7'
