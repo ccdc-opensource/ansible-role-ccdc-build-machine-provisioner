@@ -10,4 +10,4 @@ vmware_licence_key: "{{ lookup('env', 'CCDC_VMWARE_LICENSE_KEY') }}"
 # Linux-specific variables
 debian_codename: bionic
 provisioning_user: vagrant
-provisioning_repo_destination: /home/{{ provisioning_user }}/ccdc-provisioning
+provisioning_repo_destination: /home/{{ provisioning_user }}/ccdc-provisioning/

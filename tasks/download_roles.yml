@@ -1,4 +1,9 @@
 ---
+  - name: Create repository target directory
+    file:
+      path: "{{ provisioning_repo_destination }}"
+      state: directory
+
   - name: Check out provisioning repos
     git:
       repo: "{{ repository_url }}"
