@@ -1,0 +1,13 @@
+---
+  - name: Check out provisioning repos
+    git:
+      repo: {{ repository_url }}
+      dest: {{ provisioning_repo_destination }}
+    loop:
+      - 'git@ssh.dev.azure.com:v3/ccdc/build-systems/packer-ccdc-basebox-macosx-10.15'
+      - 'git@ssh.dev.azure.com:v3/ccdc/build-systems/packer-ccdc-basebox-centos-7'
+      - 'git@ssh.dev.azure.com:v3/ccdc/build-systems/packer-ccdc-basebox-ubuntu-18.04'
+      - 'git@ssh.dev.azure.com:v3/ccdc/build-systems/packer-ccdc-basebox-windows-server-2019'
+      - 'git@ssh.dev.azure.com:v3/ccdc/build-systems/cpp-buildmachine-deployment'
+    loop_control:
+      loop_variable: repository_url

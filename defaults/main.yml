@@ -1,0 +1,4 @@
+---
+macos_version: 10.15.3
+vagrant_vmware_plugin_licence_file: "{{ lookup('env', 'CCDC_VAGRANT_VMWARE_PLUGIN_LICENSE_FILE') }}"
+vmware_licence_key: "{{ lookup('env', 'CCDC_VMWARE_LICENSE_KEY') }}"

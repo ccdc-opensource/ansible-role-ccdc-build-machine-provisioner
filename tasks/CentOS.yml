@@ -1,0 +1,94 @@
+---
+  - name: Ensure source control providers are installed
+    include_role:
+      name: ccdc-scm-providers
+
+  - name: Install packer
+    unarchive:
+      src: https://releases.hashicorp.com/packer/{{ packer_version }}/packer_{{ packer_version }}_linux_amd64.zip
+      remote_src: yes
+      dest: /usr/local/packer/
+      creates: /usr/local/packer/packer
+    become: yes
+    
+  - name: Create symlink for packer
+    file:
+      src: /usr/local/packer/packer
+      dest: /usr/bin/packer
+      state: link
+      mode: '0755'
+    become: yes
+
+  - name: Add virtualbox repo
+    yum_repository:
+      name: virtualbox
+      desc: Oracle Linux / RHEL / CentOS-$releasever / $basearch - VirtualBox
+      baseurl: http://download.virtualbox.org/virtualbox/rpm/el/$releasever/$basearch
+      gpgkey: https://www.virtualbox.org/download/oracle_vbox.asc
+      gpgcheck: yes
+      repo_gpgcheck: yes
+    become: yes
+
+  - name: Install VirtualBox {{ virtualbox_version }}
+    yum:
+      name:
+        - dkms
+        - kernel-devel
+        - kernel-headers
+        - VirtualBox-{{ virtualbox_version }}
+      use_backend: yum
+    become: yes
+
+  - name: Add {{ provisioning_user }} to vboxusers group
+    user:
+      name: {{ provisioning_user }}
+      groups:
+        - vboxusers
+    become: yes
+
+  - name: Download VMWare Workstation Pro
+    get_url:
+      url: https://www.vmware.com/go/getworkstation-linux
+      dest: /tmp/vmware.bundle
+      mode: 0777
+
+  - name: Install VMware Workstation Pro
+    command:
+      cmd: /tmp/vmware.bundle
+
+  - name: Install Vagrant
+    yum:
+      name:
+        - https://releases.hashicorp.com/vagrant/{{ vagrant_version }}/vagrant_{{ vagrant_version }}_x86_64.rpm
+    become: yes
+
+  - name: Install Vagrant VMware plugin
+    command: vagrant plugin install vagrant-vmware-desktop
+  
+  # https://www.vagrantup.com/docs/vmware/installation.html
+  - name: Copy Vagrant VMware plugin licence file
+    copy:
+      src: {{ vagrant_vmware_plugin_licence_file }}
+      dest: "/tmp/vagrant-vmware-plugin.lic"
+
+  - name: Install Vagrant VMware plugin licence
+    command: vagrant plugin license vagrant-vmware-desktop /tmp/vagrant-vmware-plugin.lic
+
+  - name: Remove copy of Vagrant VMware plugin licence file
+    file:
+      path: /tmp/vagrant-vmware-plugin.lic
+      state: absent
+
+  # https://kb.vmware.com/s/article/1009244
+  # https://communities.vmware.com/message/2104737#2104737
+  - name: Activate VMware licence
+    command: /usr/lib/vmware/bin/vmware-vmx --new-sn "{{ vmware_licence_key }}"
+
+  - name: Install Ansible
+    pip:
+      name:
+        - ansible
+
+  - name: Download Stage 1 provisioning repositories
+    include_tasks:
+      file: download_roles.yml

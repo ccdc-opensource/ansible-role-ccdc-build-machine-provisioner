@@ -1,0 +1,3 @@
+---
+  provisioning_user: vagrant
+  provisioning_repo_destination: d:\\ccdc-provisioning
