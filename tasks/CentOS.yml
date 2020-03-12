@@ -112,8 +112,8 @@
 
   - name: Install Ansible
     pip:
-      name:
-        - ansible
+      name: ansible
+      executable: pip3
 
   - name: Download Stage 1 provisioning repositories
     include_tasks:
