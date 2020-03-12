@@ -7,6 +7,12 @@
     include_role:
       name: ccdc-system-python
 
+  - name: Create packer installation directory
+    file:
+      path: /usr/local/packer
+      state: directory
+    become: yes
+
   - name: Install packer
     unarchive:
       src: https://releases.hashicorp.com/packer/{{ packer_version }}/packer_{{ packer_version }}_linux_amd64.zip
@@ -44,7 +50,7 @@
 
   - name: Add {{ provisioning_user }} to vboxusers group
     user:
-      name: {{ provisioning_user }}
+      name: "{{ provisioning_user }}"
       groups:
         - vboxusers
     become: yes
@@ -71,7 +77,7 @@
   # https://www.vagrantup.com/docs/vmware/installation.html
   - name: Copy Vagrant VMware plugin licence file
     copy:
-      src: {{ vagrant_vmware_plugin_licence_file }}
+      src: "{{ vagrant_vmware_plugin_licence_file }}"
       dest: "/tmp/vagrant-vmware-plugin.lic"
 
   - name: Install Vagrant VMware plugin licence

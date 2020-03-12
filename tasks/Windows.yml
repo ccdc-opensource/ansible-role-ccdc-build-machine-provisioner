@@ -19,7 +19,7 @@
   # https://www.vagrantup.com/docs/vmware/installation.html
   - name: Copy Vagrant VMware plugin licence file
     copy:
-      src: {{ vagrant_vmware_plugin_licence_file }}
+      src: "{{ vagrant_vmware_plugin_licence_file }}"
       dest: "c:/vagrant-vmware-plugin.lic"
 
   - name: Install Vagrant VMware plugin license

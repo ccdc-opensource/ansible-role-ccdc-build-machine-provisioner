@@ -13,7 +13,7 @@
 
   - name: Install virtualisation packages
     homebrew_cask:
-      name: {{ package }}
+      name: "{{ package }}"
     loop:
       - vagrant
       - vagrant-vmware-utility
@@ -27,7 +27,7 @@
 
   - name: Install Packer
     homebrew:
-      name: {{ package }}
+      name: "{{ package }}"
     loop:
       - packer
     loop_control:
@@ -41,7 +41,7 @@
   # https://www.vagrantup.com/docs/vmware/installation.html
   - name: Copy Vagrant VMware plugin licence file
     copy:
-      src: {{ vagrant_vmware_plugin_licence_file }}
+      src: "{{ vagrant_vmware_plugin_licence_file }}"
       dest: "/tmp/vagrant-vmware-plugin.lic"
 
   - name: Install Vagrant VMware plugin licence
