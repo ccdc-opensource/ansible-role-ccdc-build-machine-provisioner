@@ -2,5 +2,7 @@
   - src: geerlingguy.homebrew
   - src: git@ssh.dev.azure.com:v3/ccdc/build-systems/ansible-role-ccdc-scm-providers
     name: ccdc-scm-providers
+    scm: git
   - src: git@ssh.dev.azure.com:v3/ccdc/build-systems/ansible-role-ccdc-system-python
     name: ccdc-system-python
+    scm: git
