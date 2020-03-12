@@ -10,4 +10,4 @@
       - 'git@ssh.dev.azure.com:v3/ccdc/build-systems/packer-ccdc-basebox-windows-server-2019'
       - 'git@ssh.dev.azure.com:v3/ccdc/build-systems/cpp-buildmachine-deployment'
     loop_control:
-      loop_variable: repository_url
+      loop_var: repository_url
