@@ -15,6 +15,10 @@ In order to set up the VMware related licenses correctly, you *must* set the fol
 
 If these variables are not set, you will NOT be able to build VMware images after provisioning.
 
+# Manual Steps Required
+
+On MacOS hosts, VirtualBox and VMWare will likely both need their kernel extensions activating before they can be used properly. To do this, open System Preferences, navigate to the Security & Privacy pane and click the lock icon on the "General" tab. There should be a message notifying you of the kernel extensions having been blocked, which you can allow from this tab in the dialog.
+
 # Details
 
 In detail, this will install:

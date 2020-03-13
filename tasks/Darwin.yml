@@ -17,6 +17,7 @@
       - vagrant-vmware-utility
       - vmware-fusion
       - virtualbox
+    become: yes
 
   - name: Install Vagrant VMware plugin
     command: vagrant plugin install vagrant-vmware-desktop
@@ -36,9 +37,11 @@
     copy:
       src: "{{ vagrant_vmware_plugin_licence_file }}"
       dest: "/tmp/vagrant-vmware-plugin.lic"
+    when: "{{ vagrant_vmware_plugin_licence_file }}"
 
   - name: Install Vagrant VMware plugin licence
     command: vagrant plugin license vagrant-vmware-desktop /tmp/vagrant-vmware-plugin.lic
+    when: "{{ vagrant_vmware_plugin_licence_file }}"
 
   - name: Remove copy of Vagrant VMware plugin licence file
     file:
@@ -50,6 +53,7 @@
   - name: Activate VMware licence
     command: /Applications/VMware\ Fusion.app/Contents/Library/licenses/vmware-licenseTool enter "{{ vmware_licence_key }}" "CCDC" "CCDC" "{{ vmware_version }}" "Vmware Fusion for Mac OS" ""
     become: yes
+    when: "{{ vmware_licence_key }}"
 
   - name: Download macOS {{ macos_version }} installer
     shell: softwareupdate --fetch-full-installer --full-installer-version {{ macos_version }}
