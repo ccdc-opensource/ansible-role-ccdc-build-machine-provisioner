@@ -1,3 +1,4 @@
 ---
   provisioning_user: vagrant
   provisioning_repo_destination: /Users/{{ provisioning_user }}/ccdc-provisioning
+  vmware_version: 11.5
