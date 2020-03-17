@@ -29,7 +29,7 @@ In detail, this will install:
   - [VirtualBox](https://virtualbox.org/)
   - [VMWare Fusion](https://www.vmware.com/products/fusion.html) (on macOS)
   - [VMWare Workstation Pro](https://www.vmware.com/products/workstation-pro.html) (on Linux and Windows)
-  - Ansible
+  - [Ansible](https://www.ansible.com/)
 
 On macOS only, applying the role will also download:
 
@@ -39,3 +39,9 @@ On macOS only, applying the role will also download:
 On Windows only, the role will also install and set up the [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) Ubuntu distribution as this is the only way to use the provisioning tools on Windows.
 
 It will also download all the deployment roles from the CCDC Azure repositories and apply licenses to VMware and the Vagrant VMware Utility.
+
+The deployment roles will be downloaded to the following locations on the different systems:
+
+  - `d:\ccdc-provisioning` on Windows
+  - `/Users/vagrant/ccdc-provisioning` on macOS
+  - `/home/vagrant/ccdc-provisioning` on Linux
