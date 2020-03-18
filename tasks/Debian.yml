@@ -79,9 +79,11 @@
     copy:
       src: "{{ vagrant_vmware_plugin_licence_file }}"
       dest: "/tmp/vagrant-vmware-plugin.lic"
+    when: vagrant_vmware_plugin_licence_file is defined
 
   - name: Install Vagrant VMware plugin licence
     command: vagrant plugin license vagrant-vmware-desktop /tmp/vagrant-vmware-plugin.lic
+    when: vagrant_vmware_plugin_licence_file is defined
 
   - name: Remove copy of Vagrant VMware plugin licence file
     file:
@@ -92,6 +94,7 @@
   # https://communities.vmware.com/message/2104737#2104737
   - name: Activate VMware licence
     command: /usr/lib/vmware/bin/vmware-vmx --new-sn "{{ vmware_licence_key }}"
+    when: vmware_licence_key is defined
 
   - name: Install Ansible
     pip:
