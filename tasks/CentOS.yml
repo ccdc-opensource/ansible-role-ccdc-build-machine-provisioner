@@ -115,7 +115,9 @@
 
   - name: Install Ansible
     pip:
-      name: ansible
+      name:
+        - ansible
+        - pywinrm
       executable: pip3
     become: true
 

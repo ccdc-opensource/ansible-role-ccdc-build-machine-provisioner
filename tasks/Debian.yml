@@ -100,7 +100,8 @@
     pip:
       name:
         - ansible
-
+        - pywinrm
+  
   - name: Download Stage 1 provisioning repositories
     include_tasks:
       file: download_roles.yml

@@ -67,6 +67,7 @@
     pip:
       name:
         - ansible
+        - pywinrm
       executable: pip3
       extra_args: '--user'
 
