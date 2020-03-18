@@ -11,25 +11,30 @@
     include_role:
       name: ccdc-system-python
 
+  - name: Copy current user SSH keys to target
+    include_tasks: ssh_keys.yml
+
   - name: Install virtualisation packages
     homebrew_cask:
+      name: "{{ cask }}"
+    loop:
       - vagrant
       - vagrant-vmware-utility
       - vmware-fusion
       - virtualbox
-    become: yes
+    loop_control:
+      loop_var: cask
 
   - name: Install Vagrant VMware plugin
-    command: vagrant plugin install vagrant-vmware-desktop
+    command: "/usr/local/bin/vagrant plugin install vagrant-vmware-desktop"
 
   - name: Install Packer
     homebrew:
-      - packer
+      name: packer
 
   - name: Install macinbox
     gem:
       name: macinbox
-      state: latest
     become: yes
 
   # https://www.vagrantup.com/docs/vmware/installation.html
@@ -37,15 +42,15 @@
     copy:
       src: "{{ vagrant_vmware_plugin_licence_file }}"
       dest: "/tmp/vagrant-vmware-plugin.lic"
-    when: "{{ vagrant_vmware_plugin_licence_file }}"
+    when: vagrant_vmware_plugin_licence_file is defined
 
   - name: Install Vagrant VMware plugin licence
-    command: vagrant plugin license vagrant-vmware-desktop /tmp/vagrant-vmware-plugin.lic
-    when: "{{ vagrant_vmware_plugin_licence_file }}"
+    command: /usr/local/bin/vagrant plugin license vagrant-vmware-desktop "/tmp/vagrant-vmware-plugin.lic"
+    when: vagrant_vmware_plugin_licence_file is defined
 
   - name: Remove copy of Vagrant VMware plugin licence file
     file:
-      path: /tmp/vagrant-vmware-plugin.lic
+      path: "/tmp/vagrant-vmware-plugin.lic"
       state: absent
 
   # https://kb.vmware.com/s/article/1009244
@@ -53,7 +58,7 @@
   - name: Activate VMware licence
     command: /Applications/VMware\ Fusion.app/Contents/Library/licenses/vmware-licenseTool enter "{{ vmware_licence_key }}" "CCDC" "CCDC" "{{ vmware_version }}" "Vmware Fusion for Mac OS" ""
     become: yes
-    when: "{{ vmware_licence_key }}"
+    when:  vmware_licence_key is defined
 
   - name: Download macOS {{ macos_version }} installer
     shell: softwareupdate --fetch-full-installer --full-installer-version {{ macos_version }}
@@ -62,6 +67,8 @@
     pip:
       name:
         - ansible
+      executable: pip3
+      extra_args: '--user'
 
   - name: Download Stage 1 provisioning repositories
     include_tasks:
