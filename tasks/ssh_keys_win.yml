@@ -1,0 +1,23 @@
+---
+- name: Install ssh agent
+  win_shell: Add-WindowsCapability -Online -Name OpenSSH.Client~~~~0.0.1.0
+
+- name: Start ssh agent service
+  win_service:
+    name: ssh-agent
+    start_mode: auto
+    state: started
+
+- name: Copy SSH keys
+  win_copy:
+    src: "~/.ssh/{{ key }}"
+    dest: "{{ ssh_key_path }}\\{{ key }}"
+    force: no
+  loop:
+    - id_rsa.pub
+    - id_rsa
+  loop_control:
+    loop_var: key
+
+- name: Add SSH keys
+  win_shell: ssh-add "{{ ssh_key_path }}\\id_rsa"

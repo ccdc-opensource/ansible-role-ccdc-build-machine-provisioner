@@ -1,3 +1,5 @@
 ---
 provisioning_repo_destination: d:\\ccdc-provisioning
 ssh_key_path: c:\\users\\{{ provisioning_user }}\\.ssh
+local_user: vagrant
+wsl_user_password: vagrant
