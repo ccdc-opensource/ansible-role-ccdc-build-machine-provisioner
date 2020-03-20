@@ -71,8 +71,14 @@
         - https://releases.hashicorp.com/vagrant/{{ vagrant_version }}/vagrant_{{ vagrant_version }}_x86_64.deb
     become: yes
 
-  - name: Install Vagrant VMware plugin
-    command: vagrant plugin install vagrant-vmware-desktop
+  - name: Install Vagrant plugins
+    command: vagrant plugin install {{ plugin }}
+    loop:
+      - vagrant-vmware-desktop
+      - vagrant-vbguest
+    loop_control:
+      loop_var: plugin
+
   
   # https://www.vagrantup.com/docs/vmware/installation.html
   - name: Copy Vagrant VMware plugin licence file

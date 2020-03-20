@@ -25,8 +25,13 @@
     loop_control:
       loop_var: cask
 
-  - name: Install Vagrant VMware plugin
-    command: "/usr/local/bin/vagrant plugin install vagrant-vmware-desktop"
+  - name: Install Vagrant plugins
+    command: "/usr/local/bin/vagrant plugin install {{ plugin }}"
+    loop:
+      - vagrant-vmware-desktop
+      - vagrant-vbguest
+    loop_control:
+      loop_var: plugin
 
   - name: Install Packer
     homebrew:
