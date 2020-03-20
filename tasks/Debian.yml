@@ -78,7 +78,6 @@
       - vagrant-vbguest
     loop_control:
       loop_var: plugin
-
   
   # https://www.vagrantup.com/docs/vmware/installation.html
   - name: Copy Vagrant VMware plugin licence file
