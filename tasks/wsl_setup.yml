@@ -10,7 +10,7 @@
 
   - name: Install Ubuntu 18.04 for WSL
     win_chocolatey:
-      name: wsl-ubuntu-1804
+      name: wsl-ubuntu-18-04
     become: yes
 
   - name: Copy wsl-vagrant wrapper
@@ -19,17 +19,19 @@
       dest: "c:\\ProgramData\\chocolatey\\bin\\wsl-vagrant"
     become: true
 
-  - name: Update WSL apt database
-    win_shell: wsl -e apt update
-
-  - name: Install pip in WSL Python 3
-    win_shell: wsl -e apt install -y python3-pip
-
-  - name: Install Ansible in WSL Python
-    win_shell: wsl -e pip3 install ansible pywinrm
-
-  - name: Set up WSL automount
-    win_shell: wsl -u root echo -e [automount]\\nenabled = true\\nroot = /mnt/\\noptions = '\"metadata,umask=22,fmask=11\"'\\n `>> /etc/wsl.conf
+  - name: Set permissions on WSL and wsl-vagrant
+    win_acl:
+      path: "{{ path }}"
+      user: BUILTIN\Users
+      rights: FullControl
+      type: allow
+      state: present
+      inherit: ContainerInherit, ObjectInherit
+    loop:
+      - "c:\\ProgramData\\chocolatey\\bin\\wsl-vagrant"
+      - "c:\\ProgramData\\chocolatey\\lib\\wsl-ubuntu-1804"
+    loop_control:
+      loop_var: path
 
   - name: Check WSL default user
     win_shell: wsl -e whoami
@@ -43,10 +45,9 @@
     win_shell: wsl -e chpasswd {{ local_user }}:{{ wsl_user_password }}
     when: "{{ 'root' in wsl_user.stdout_lines }}"
 
-  # TODO: add {{ local_user }} to sudoers and switch default uid to 1000 via registry
-  #- name: Add {{ local_user }} to WSL sudoers
-  #  win_shell: wsl -e usermod {{ local_user }} -G wheel
-  #  when: "{{ 'root' in wsl_user.stdout_lines }}"
+  - name: Add {{ local_user }} to WSL sudoers
+    win_shell: wsl -e usermod {{ local_user }} -G wheel
+    when: "{{ 'root' in wsl_user.stdout_lines }}"
 
   - name: Switch default WSL user to {{ local_user }}
     win_regedit:
@@ -59,3 +60,15 @@
 
   - name: Set SSH key permissions for WSL user {{ local_user }}
     win_shell: wsl -u {{ local_user }} -e chmod 644 ~/.ssh/id_rsa.pub; chmod 600 ~/.ssh/id_rsa
+
+  - name: Update WSL apt database
+    win_shell: wsl -u root -e apt update
+
+  - name: Install pip in WSL Python 3
+    win_shell: wsl -u root -e apt install -y python3-pip
+
+  - name: Install Ansible in WSL Python
+    win_shell: wsl -e pip3 install ansible pywinrm
+
+  - name: Set up WSL automount
+    win_shell: wsl -u root echo -e [automount]\\nenabled = true\\nroot = /mnt/\\noptions = '\"metadata,umask=22,fmask=11\"'\\n `>> /etc/wsl.conf

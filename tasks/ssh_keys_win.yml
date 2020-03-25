@@ -8,6 +8,11 @@
     start_mode: auto
     state: started
 
+- name: Ensure {{ ssh_key_path }} exists
+  win_file:
+    path: "{{ ssh_key_path }}"
+    state: directory
+
 - name: Copy SSH keys
   win_copy:
     src: "~/.ssh/{{ key }}"
@@ -21,3 +26,4 @@
 
 - name: Add SSH keys
   win_shell: ssh-add "{{ ssh_key_path }}\\id_rsa"
+  become: yes
