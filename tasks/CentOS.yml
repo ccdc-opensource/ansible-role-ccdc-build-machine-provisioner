@@ -1,0 +1,131 @@
+---
+  - name: Set up package managers
+    include_role:
+      name: ccdc-package-manager-configuration
+
+  - name: Ensure source control providers are installed
+    include_role:
+      name: ccdc-scm-providers
+
+  - name: Ensure a recent Python is installed
+    include_role:
+      name: ccdc-system-python
+
+  - name: Install prerequisites
+    yum:
+      name:
+        - unzip
+        - dkms
+        - kernel-devel
+        - kernel-headers
+        - libXi # Required by VMware
+        - libXinerama # Required by VMware
+        - libXtst # Required by VMware
+      use_backend: yum
+    become: yes
+    
+  - name: Create packer installation directory
+    file:
+      path: /usr/local/packer
+      state: directory
+    become: yes
+
+  - name: Install packer
+    unarchive:
+      src: https://releases.hashicorp.com/packer/{{ packer_version }}/packer_{{ packer_version }}_linux_amd64.zip
+      remote_src: yes
+      dest: /usr/local/packer/
+      creates: /usr/local/packer/packer
+    become: yes
+    
+  - name: Create symlink for packer
+    file:
+      src: /usr/local/packer/packer
+      dest: /usr/bin/packer
+      state: link
+      mode: '0755'
+    become: yes
+
+  - name: Add virtualbox repo
+    yum_repository:
+      name: virtualbox
+      description: Oracle RHEL VirtualBox repository
+      baseurl: http://download.virtualbox.org/virtualbox/rpm/el/$releasever/$basearch
+      gpgkey: https://www.virtualbox.org/download/oracle_vbox.asc
+      gpgcheck: yes
+      repo_gpgcheck: yes
+    become: yes
+
+  - name: Install VirtualBox {{ virtualbox_version }}
+    yum:
+      name:
+        - VirtualBox-{{ virtualbox_version }}
+      use_backend: yum
+    become: yes
+
+  - name: Add {{ provisioning_user }} to vboxusers group
+    user:
+      name: "{{ provisioning_user }}"
+      groups:
+        - vboxusers
+    become: yes
+
+  - name: Download VMWare Workstation Pro
+    get_url:
+      url: https://www.vmware.com/go/getworkstation-linux
+      dest: /tmp/vmware.bundle
+      mode: 0777
+
+  - name: Install VMware Workstation Pro
+    command:
+      cmd: /tmp/vmware.bundle
+      creates: /bin/vmware
+    become: yes
+
+  - name: Install Vagrant
+    yum:
+      name:
+        - https://releases.hashicorp.com/vagrant/{{ vagrant_version }}/vagrant_{{ vagrant_version }}_x86_64.rpm
+    become: yes
+
+  - name: Install Vagrant plugins
+    command: vagrant plugin install {{ plugin }}
+    loop:
+      - vagrant-vmware-desktop
+      - vagrant-vbguest
+    loop_control:
+      loop_var: plugin
+  
+  # https://www.vagrantup.com/docs/vmware/installation.html
+  - name: Copy Vagrant VMware plugin licence file
+    copy:
+      src: "{{ vagrant_vmware_plugin_licence_file }}"
+      dest: "/tmp/vagrant-vmware-plugin.lic"
+    when: vagrant_vmware_plugin_licence_file is defined and vagrant_vmware_plugin_licence_file != ""
+
+  - name: Install Vagrant VMware plugin licence
+    command: vagrant plugin license vagrant-vmware-desktop /tmp/vagrant-vmware-plugin.lic
+    when: vagrant_vmware_plugin_licence_file is defined and vagrant_vmware_plugin_licence_file != ""
+
+  - name: Remove copy of Vagrant VMware plugin licence file
+    file:
+      path: /tmp/vagrant-vmware-plugin.lic
+      state: absent
+
+  # https://kb.vmware.com/s/article/1009244
+  # https://communities.vmware.com/message/2104737#2104737
+  - name: Activate VMware licence
+    command: /usr/lib/vmware/bin/vmware-vmx --new-sn "{{ vmware_licence_key }}"
+    when: vmware_licence_key is defined and vmware_licence_key != ""
+
+  - name: Install Ansible
+    pip:
+      name:
+        - ansible
+        - pywinrm
+      executable: pip3
+    become: true
+
+  - name: Download Stage 1 provisioning repositories
+    include_tasks:
+      file: download_roles.yml

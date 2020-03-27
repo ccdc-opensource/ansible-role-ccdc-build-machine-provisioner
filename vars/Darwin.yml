@@ -1,0 +1,5 @@
+---
+provisioning_repo_destination: /Users/{{ provisioning_user }}/ccdc-provisioning
+ssh_key_path: /Users/{{ provisioning_user }}/.ssh
+macos_version: 10.15.3
+vmware_version: 11.5

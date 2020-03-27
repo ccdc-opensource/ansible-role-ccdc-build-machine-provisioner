@@ -1,0 +1,19 @@
+---
+  - name: Create repository target directory
+    file:
+      path: "{{ provisioning_repo_destination }}"
+      state: directory
+
+  - name: Check out provisioning repos
+    git:
+      repo: "git@ssh.dev.azure.com:v3/ccdc/build-systems/{{ repo_name }}"
+      dest: "{{ provisioning_repo_destination }}/{{ repo_name }}"
+      accept_hostkey: yes
+    loop:
+      - 'packer-ccdc-basebox-macosx-10.15'
+      - 'packer-ccdc-basebox-centos-7'
+      - 'packer-ccdc-basebox-ubuntu-18.04'
+      - 'packer-ccdc-basebox-windows-server-2019'
+      - 'cpp-buildmachine-deployment'
+    loop_control:
+      loop_var: repo_name
