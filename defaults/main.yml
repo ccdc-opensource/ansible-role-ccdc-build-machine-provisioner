@@ -3,7 +3,9 @@ vagrant_vmware_plugin_licence_file: "{{ lookup('env', 'CCDC_VAGRANT_VMWARE_PLUGI
 vmware_licence_key: "{{ lookup('env', 'CCDC_VMWARE_LICENSE_KEY') }}"
 
 provisioning_user: vagrant
-local_user: "{{ lookup('pipe', 'id -un') | d(lookup('pipe', 'whoami'), True) | d(lookup('env', 'USER'), True) |  d(lookup('env', 'user'), True) |  d(lookup('env', 'LOGNAME'), True) }}"
+# If CCDC_PROVISIONING_USER is set this should override the actual local user name on the controller machine.
+# Otherwise the name of the currently logged in user on the controller will be used as the WSL user name on Windows. 
+local_user: "{{ lookup('env', 'CCDC_PROVISIONING_USER') | {{ lookup('pipe', 'id -un') | d(lookup('pipe', 'whoami'), True) | d(lookup('env', 'USER'), True) |  d(lookup('env', 'user'), True) |  d(lookup('env', 'LOGNAME'), True) }}"
 
 provisioning_repo_destination: /home/{{ provisioning_user }}/ccdc-provisioning/
 provisioning_dev_destination: /home/{{ provisioning_user }}/ccdc-provisioning-dev/
