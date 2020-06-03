@@ -1,19 +1,36 @@
 ---
-  - name: Create repository target directory
-    file:
-      path: "{{ provisioning_repo_destination }}"
-      state: directory
-
-  - name: Check out provisioning repos
+  - name: Check out base box provisioning repos
     git:
-      repo: "git@ssh.dev.azure.com:v3/ccdc/build-systems/{{ repo_name }}"
-      dest: "{{ provisioning_repo_destination }}/{{ repo_name }}"
+      repo: "{{ repo.url }}"
+      dest: "{{ provisioning_repo_destination }}/baseboxes/{{ repo.destination }}"
       accept_hostkey: yes
-    loop:
-      - 'packer-ccdc-basebox-macosx-10.15'
-      - 'packer-ccdc-basebox-centos-7'
-      - 'packer-ccdc-basebox-ubuntu-18.04'
-      - 'packer-ccdc-basebox-windows-server-2019'
-      - 'cpp-buildmachine-deployment'
+    loop: "{{ basebox_repos }}"
     loop_control:
-      loop_var: repo_name
+      loop_var: repo
+
+  - name: Check out build box provisioning repos
+    git:
+      repo: "{{ repo.url }}"
+      dest: "{{ provisioning_repo_destination }}/buildboxes/{{ repo.destination }}"
+      accept_hostkey: yes
+    loop: "{{ buildbox_repos }}"
+    loop_control:
+      loop_var: repo
+
+  - name: Check out test box provisioning repos
+    git:
+      repo: "{{ repo.url }}"
+      dest: "{{ provisioning_repo_destination }}/testboxes/{{ repo.destination }}"
+      accept_hostkey: yes
+    loop: "{{ testbox_repos }}"
+    loop_control:
+      loop_var: repo
+
+  - name: Check out provisioning development repos
+    git:
+      repo: "{{ repo.url }}"
+      dest: "{{ provisioning_dev_destination }}/{{ repo.destination }}"
+      accept_hostkey: yes
+    loop: "{{ dev_repos }}"
+    loop_control:
+      loop_var: repo

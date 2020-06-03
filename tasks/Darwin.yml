@@ -75,7 +75,19 @@
         - pywinrm
       executable: pip3
       extra_args: '--user'
+  
+  - name: Create repository target directories
+    file:
+      path: "{{ target }}"
+      state: directory
+    loop:
+      - "{{ provisioning_repo_destination }}/baseboxes"
+      - "{{ provisioning_repo_destination }}/testboxes"
+      - "{{ provisioning_repo_destination }}/buildboxes"
+      - "{{ provisioning_dev_destination }}"
+    loop_control:
+      loop_var: target
 
-  - name: Download Stage 1 provisioning repositories
+  - name: Download provisioning repositories
     include_tasks:
       file: download_roles.yml

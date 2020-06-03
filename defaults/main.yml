@@ -1,4 +1,96 @@
 ---
 vagrant_vmware_plugin_licence_file: "{{ lookup('env', 'CCDC_VAGRANT_VMWARE_PLUGIN_LICENSE_FILE') }}"
 vmware_licence_key: "{{ lookup('env', 'CCDC_VMWARE_LICENSE_KEY') }}"
+
 provisioning_user: vagrant
+local_user: "{{ lookup('pipe', 'id -un') | d(lookup('pipe', 'whoami'), True) | d(lookup('env', 'USER'), True) |  d(lookup('env', 'user'), True) |  d(lookup('env', 'LOGNAME'), True) }}"
+
+provisioning_repo_destination: /home/{{ provisioning_user }}/ccdc-provisioning/
+provisioning_dev_destination: /home/{{ provisioning_user }}/ccdc-provisioning-dev/
+ssh_key_path: /home/{{ provisioning_user }}/.ssh
+
+virtualbox_version: 6.1
+packer_version: 1.5.4
+vagrant_version: 2.2.7
+
+debian_codename: bionic
+
+basebox_repos: [
+  {
+    'url': 'git@ssh.dev.azure.com:v3/ccdc/build-systems/packer-ccdc-basebox-macosx-10.15',
+    'destination': 'baseboxes/packer-ccdc-basebox-macosx-10.15'
+  },
+  {
+    'url': 'git@ssh.dev.azure.com:v3/ccdc/build-systems/packer-ccdc-basebox-centos-7',
+    'destination': 'baseboxes/packer-ccdc-basebox-centos-7'
+  },
+  {
+    'url': 'git@ssh.dev.azure.com:v3/ccdc/build-systems/packer-ccdc-basebox-ubuntu-18.04',
+    'destination': 'baseboxes/packer-ccdc-basebox-ubuntu-18.04'
+  },
+    {
+    'url': 'git@ssh.dev.azure.com:v3/ccdc/build-systems/packer-ccdc-basebox-windows-2019',
+    'destination': 'baseboxes/packer-ccdc-basebox-windows-2019'
+  }
+]
+
+testbox_repos: [
+  {
+    'url': 'git@ssh.dev.azure.com:v3/ccdc/build-systems/vagrant-test-centos7',
+    'destination': 'testboxes/vagrant-test-centos7'
+  },
+  {
+    'url': 'git@ssh.dev.azure.com:v3/ccdc/build-systems/vagrant-test-centos8',
+    'destination': 'testboxes/vagrant-test-centos8'
+  },
+  {
+    'url': 'git@ssh.dev.azure.com:v3/ccdc/build-systems/vagrant-test-ubuntu-18.04',
+    'destination': 'testboxes/vagrant-test-ubuntu-18.04'
+  },
+  {
+    'url': 'git@ssh.dev.azure.com:v3/ccdc/build-systems/vagrant-test-ubuntu-20.04',
+    'destination': 'testboxes/vagrant-test-ubuntu-20.04'
+  },
+  {
+    'url': 'git@ssh.dev.azure.com:v3/ccdc/build-systems/vagrant-test-windows-2019',
+    'destination': 'testboxes/vagrant-test-windows-2019'
+  },
+  {
+    'url': 'git@ssh.dev.azure.com:v3/ccdc/build-systems/vagrant-test-macos-10.15',
+    'destination': 'testboxes/vagrant-test-macos-10.15'
+  },
+  {
+    'url': 'git@ssh.dev.azure.com:v3/ccdc/csd-sketcher/vagrant-webdev-centos7',
+    'destination': 'testboxes/vagrant-webdev-centos7'
+  },
+  {
+    'url': 'git@ssh.dev.azure.com:v3/ccdc/csd-sketcher/vagrant-webdev-windows-2019',
+    'destination': 'testboxes/vagrant-webdev-windows-2019'
+  }
+]
+
+buildbox_repos: [
+  {
+    'url': 'git@ssh.dev.azure.com:v3/ccdc/build-systems/vagrant-stage3-centos7',
+    'destination': 'buildboxes/vagrant-stage3-centos7'
+  },
+  {
+    'url': 'git@ssh.dev.azure.com:v3/ccdc/build-systems/vagrant-stage3-macosx-10.15',
+    'destination': 'buildboxes/vagrant-stage3-macosx-10.15'
+  },
+  {
+    'url': 'git@ssh.dev.azure.com:v3/ccdc/build-systems/vagrant-stage3-windows-2019',
+    'destination': 'buildboxes/vagrant-stage3-windows-2019'
+  }
+]
+
+dev_repos: [
+  {
+    'url': 'git@ssh.dev.azure.com:v3/ccdc/build-systems/cpp-buildmachine-deployment',
+    'destination': 'cpp-buildmachine-deployment'
+  },
+  {
+    'url': 'git@ssh.dev.azure.com:v3/ccdc/build-systems/ansible-role-ccdc-buildmachine-provisioner',
+    'destination': 'ansible-role-ccdc-buildmachine-provisioner'
+  }
+]

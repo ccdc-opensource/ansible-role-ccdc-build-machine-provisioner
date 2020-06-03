@@ -1,5 +1,6 @@
 ---
 provisioning_repo_destination: /Users/{{ provisioning_user }}/ccdc-provisioning
+provisioning_dev_destination: /Users/{{ provisioning_user }}/ccdc-provisioning-dev
 ssh_key_path: /Users/{{ provisioning_user }}/.ssh
 macos_version: 10.15.4
 vmware_version: 11.5
