@@ -1,59 +1,58 @@
 ---
-  - name: Ensure source control providers are installed
-    include_role:
-      name: ccdc.scm_providers
+- name: Ensure source control providers are installed
+  include_role:
+    name: ccdc.scm_providers
 
-  - name: Install virtualisation packages
-    win_chocolatey:
-      name: "{{ package }}"
-    # Doing this as a loop to reduce the risk of connection timeouts for slow installs
-    # and to have some status output as each package installs
-    loop:
-        - packer 
-        - vmwareworkstation
-        - virtualbox
-        - vagrant
-        - vagrant-vmware-utility
-    loop_control:
-      loop_var: package
+- name: Install virtualisation packages
+  win_chocolatey:
+    name: "{{ package }}"
+  # Doing this as a loop to reduce the risk of connection timeouts for slow installs
+  # and to have some status output as each package installs
+  loop:
+    - packer
+    - vmwareworkstation
+    - virtualbox
+    - vagrant
+    - vagrant-vmware-utility
+  loop_control:
+    loop_var: package
 
-  - name: Install Vagrant plugins
-    win_command: vagrant plugin install {{ plugin }}
-    loop:
-      - vagrant-vmware-desktop
-      - vagrant-vbguest
-    loop_control:
-      loop_var: plugin
+- name: Install Vagrant plugins
+  win_command: vagrant plugin install {{ plugin }}
+  loop:
+    - vagrant-vmware-desktop
+    - vagrant-vbguest
+  loop_control:
+    loop_var: plugin
 
+# https://www.vagrantup.com/docs/vmware/installation.html
+- name: Copy Vagrant VMware plugin licence file
+  win_copy:
+    src: "{{ vagrant_vmware_plugin_licence_file }}"
+    dest: "c:/vagrant-vmware-plugin.lic"
+  when: vagrant_vmware_plugin_licence_file is defined and vagrant_vmware_plugin_licence_file != ""
 
-  # https://www.vagrantup.com/docs/vmware/installation.html
-  - name: Copy Vagrant VMware plugin licence file
-    win_copy:
-      src: "{{ vagrant_vmware_plugin_licence_file }}"
-      dest: "c:/vagrant-vmware-plugin.lic"
-    when: vagrant_vmware_plugin_licence_file is defined and vagrant_vmware_plugin_licence_file != ""
+- name: Install Vagrant VMware plugin license
+  win_command: vagrant plugin license vagrant-vmware-desktop c:/vagrant-vmware-plugin.lic
+  when: vagrant_vmware_plugin_licence_file is defined and vagrant_vmware_plugin_licence_file != ""
 
-  - name: Install Vagrant VMware plugin license
-    win_command: vagrant plugin license vagrant-vmware-desktop c:/vagrant-vmware-plugin.lic
-    when: vagrant_vmware_plugin_licence_file is defined and vagrant_vmware_plugin_licence_file != ""
+- name: Remove copy of Vagrant VMware plugin license file
+  win_file:
+    path: c:/vagrant-vmware-plugin.lic
+    state: absent
 
-  - name: Remove copy of Vagrant VMware plugin license file
-    win_file:
-      path: c:/vagrant-vmware-plugin.lic
-      state: absent
+# https://kb.vmware.com/s/article/1009244
+# https://communities.vmware.com/message/2104737#2104737
+- name: Activate VMware licence
+  win_command: "c:\\Program Files (x86)\\VMware\\VMware Workstation\\x64\\vmware-vmx --new-sn {{ vmware_licence_key }}"
+  when: vmware_licence_key is defined and vmware_licence_key != ""
 
-  # https://kb.vmware.com/s/article/1009244
-  # https://communities.vmware.com/message/2104737#2104737
-  - name: Activate VMware licence
-    win_command: "c:\\Program Files (x86)\\VMware\\VMware Workstation\\x64\\vmware-vmx --new-sn {{ vmware_licence_key }}"
-    when: vmware_licence_key is defined and vmware_licence_key != ""
+- name: Set up SSH keys
+  include_tasks: ssh_keys_win.yml
 
-  - name: Set up SSH keys
-    include_tasks: ssh_keys_win.yml
+- name: Set up Windows Subsystem for Linux
+  include_tasks: wsl_setup.yml
 
-  - name: Set up Windows Subsystem for Linux
-    include_tasks: wsl_setup.yml
-
-  - name: Download Stage 1 provisioning repositories
-    include_tasks:
-      file: download_roles.yml
+- name: Download Stage 1 provisioning repositories
+  include_tasks:
+    file: download_roles.yml

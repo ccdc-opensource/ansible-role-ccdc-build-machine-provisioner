@@ -5,7 +5,7 @@
     dest: "{{ ssh_key_path }}"
     mode: "{{ key.mode }}"
   loop:
-    - { name: 'id_rsa.pub', mode: '644' }
-    - { name: 'id_rsa', mode: '600' }
+    - { name: "id_rsa.pub", mode: "644" }
+    - { name: "id_rsa", mode: "600" }
   loop_control:
     loop_var: key

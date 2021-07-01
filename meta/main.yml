@@ -3,6 +3,7 @@ dependencies: []
 
 galaxy_info:
   role_name: build_machine_provisioner
+  namespace: ccdc
   author: piesche@ccdc.cam.ac.uk
   description: Set up a machine to work as a provisioner for build machines
   company: The Cambridge Crystallographic Data Centre
@@ -21,9 +22,9 @@ galaxy_info:
     - name: Ubuntu
       versions:
         - all
-    - name: Darwin
+    - name: MacOSX
       versions:
-        - all
+        - 10.15
     - name: Windows
       versions:
         - all
