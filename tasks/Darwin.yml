@@ -1,81 +1,81 @@
 ---
-  - name: Ensure Homebrew is installed
-    include_role:
-      name: geerlingguy.homebrew
+- name: Ensure Homebrew is installed
+  include_role:
+    name: geerlingguy.homebrew
 
-  - name: Ensure source control providers are installed
-    include_role:
-      name: ccdc.scm_providers
+- name: Ensure source control providers are installed
+  include_role:
+    name: ccdc.scm_providers
 
-  - name: Ensure a recent Python is installed
-    include_role:
-      name: ccdc.system_python
+- name: Ensure a recent Python is installed
+  include_role:
+    name: ccdc.system_python
 
-  - name: Copy current user SSH keys to target
-    include_tasks: ssh_keys.yml
+- name: Copy current user SSH keys to target
+  include_tasks: ssh_keys.yml
 
-  - name: Install virtualisation packages
-    homebrew_cask:
-      name: "{{ cask }}"
-    loop:
-      - vagrant
-      - vagrant-vmware-utility
-      - vmware-fusion
-      - virtualbox
-    loop_control:
-      loop_var: cask
+- name: Install virtualisation packages
+  homebrew_cask:
+    name: "{{ cask }}"
+  loop:
+    - vagrant
+    - vagrant-vmware-utility
+    - vmware-fusion
+    - virtualbox
+  loop_control:
+    loop_var: cask
 
-  - name: Install Vagrant plugins
-    command: "/usr/local/bin/vagrant plugin install {{ plugin }}"
-    loop:
-      - vagrant-vmware-desktop
-      - vagrant-vbguest
-    loop_control:
-      loop_var: plugin
+- name: Install Vagrant plugins
+  command: "/usr/local/bin/vagrant plugin install {{ plugin }}"
+  loop:
+    - vagrant-vmware-desktop
+    - vagrant-vbguest
+  loop_control:
+    loop_var: plugin
 
-  - name: Install Packer
-    homebrew:
-      name: packer
+- name: Install Packer
+  homebrew:
+    name: packer
 
-  - name: Install macinbox
-    gem:
-      name: macinbox
-    become: yes
+- name: Install macinbox
+  gem:
+    name: macinbox
+  become: true
 
-  # https://www.vagrantup.com/docs/vmware/installation.html
-  - name: Copy Vagrant VMware plugin licence file
-    copy:
-      src: "{{ vagrant_vmware_plugin_licence_file }}"
-      dest: "/tmp/vagrant-vmware-plugin.lic"
-    when: vagrant_vmware_plugin_licence_file is defined and vagrant_vmware_plugin_licence_file != ""
+# https://www.vagrantup.com/docs/vmware/installation.html
+- name: Copy Vagrant VMware plugin licence file
+  copy:
+    src: "{{ vagrant_vmware_plugin_licence_file }}"
+    dest: "/tmp/vagrant-vmware-plugin.lic"
+  when: vagrant_vmware_plugin_licence_file is defined and vagrant_vmware_plugin_licence_file != ""
 
-  - name: Install Vagrant VMware plugin licence
-    command: /usr/local/bin/vagrant plugin license vagrant-vmware-desktop "/tmp/vagrant-vmware-plugin.lic"
-    when: vagrant_vmware_plugin_licence_file is defined and vagrant_vmware_plugin_licence_file != ""
+- name: Install Vagrant VMware plugin licence
+  command: /usr/local/bin/vagrant plugin license vagrant-vmware-desktop "/tmp/vagrant-vmware-plugin.lic"
+  when: vagrant_vmware_plugin_licence_file is defined and vagrant_vmware_plugin_licence_file != ""
 
-  - name: Remove copy of Vagrant VMware plugin licence file
-    file:
-      path: "/tmp/vagrant-vmware-plugin.lic"
-      state: absent
+- name: Remove copy of Vagrant VMware plugin licence file
+  file:
+    path: "/tmp/vagrant-vmware-plugin.lic"
+    state: absent
 
-  # https://kb.vmware.com/s/article/1009244
-  # https://communities.vmware.com/message/2104737#2104737
-  - name: Activate VMware licence
-    command: /Applications/VMware\ Fusion.app/Contents/Library/licenses/vmware-licenseTool enter "{{ vmware_licence_key }}" "CCDC" "CCDC" "{{ vmware_version }}" "Vmware Fusion for Mac OS" ""
-    become: yes
-    when: vmware_licence_key is defined and vmware_licence_key != ""
+# https://kb.vmware.com/s/article/1009244
+# https://communities.vmware.com/message/2104737#2104737
+- name: Activate VMware licence
+  command: /Applications/VMware\ Fusion.app/Contents/Library/licenses/vmware-licenseTool enter "{{ vmware_licence_key }}" "CCDC" "CCDC" "{{ vmware_version }}" "Vmware Fusion for Mac OS" ""
+  become: true
+  when: vmware_licence_key is defined and vmware_licence_key != ""
 
-  - name: Download macOS {{ macos_version }} installer
-    shell: softwareupdate --fetch-full-installer --full-installer-version {{ macos_version }}
+- name: Download macOS {{ macos_version }} installer
+  shell: softwareupdate --fetch-full-installer --full-installer-version {{ macos_version }}
 
-  - name: Install Ansible
-    pip:
-      name:
-        - ansible
-        - pywinrm
-      executable: pip3
-      extra_args: '--user'
+- name: Install Ansible
+  pip:
+    name:
+      - ansible
+      - pywinrm
+    executable: pip3
+    extra_args: "--user"
 
-  - name: Download Stage 1 provisioning repositories
-    include_tasks:
-      file: download_roles.yml
+- name: Download Stage 1 provisioning repositories
+  include_tasks:
+    file: download_roles.yml

@@ -1,11 +1,7 @@
 ---
-  - src: geerlingguy.homebrew
-  - src: https://github.com/ccdc-opensource/ansible-role-ccdc-package-manager-configuration
-    name: ccdc.package_manager_configuration
-    scm: git
-  - src: git@github.com:ccdc-confidential/ansible-role-ccdc-scm-providers.git
-    name: ccdc.scm_providers
-    scm: git
-  - src: https://github.com/ccdc-opensource/ansible-role-ccdc-system-python
-    name: ccdc.system_python
-    scm: git
+- src: geerlingguy.homebrew
+- name: ccdc.package_manager_configuration
+- src: git@github.com:ccdc-confidential/ansible-role-ccdc-scm-providers.git
+  name: ccdc.scm_providers
+  scm: git
+- name: ccdc.system_python
