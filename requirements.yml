@@ -1,7 +1,5 @@
 ---
 - src: geerlingguy.homebrew
 - name: ccdc.package_manager_configuration
-- src: git@github.com:ccdc-confidential/ansible-role-ccdc-scm-providers.git
-  name: ccdc.scm_providers
-  scm: git
-- name: ccdc.system_python
+- src: ccdc.scm_providers
+- src: ccdc.system_python
