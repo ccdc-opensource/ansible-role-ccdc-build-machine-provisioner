@@ -1,11 +1,11 @@
 ---
   - name: Ensure source control providers are installed
     include_role:
-      name: ccdc-scm-providers
+      name: ccdc.scm_providers
 
   - name: Ensure a recent Python is installed
     include_role:
-      name: ccdc-system-python
+      name: ccdc.system_python
 
   - name: Create packer installation directory
     file:

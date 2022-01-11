@@ -1,7 +1,7 @@
 ---
   - name: Ensure source control providers are installed
     include_role:
-      name: ccdc-scm-providers
+      name: ccdc.scm_providers
 
   - name: Install virtualisation packages
     win_chocolatey:
