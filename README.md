@@ -2,11 +2,11 @@
 
 This ansible role will set up a target machine with the prerequisites for creating all three stages of CCDC build machines.
 
-For detailed documentation on CCDC build machine provisioning, please visit [the documentation on Confluence](https://confluence.ccdc.cam.ac.uk/x/6Rh_/).
+For detailed documentation on CCDC build machine provisioning, please visit [the documentation on Confluence](https://ccdc-cambridge.atlassian.net/l/c/u6inG791).
 
 # Requirements
 
-You will need to have access to the [CCDC Azure DevOps `build_systems` repositories](https://dev.azure.com/ccdc/build-systems/).
+You will need to have access to the [CCDC confidential org](https://github.com/ccdc-confidential).
 
 In order to set up the VMware related licenses correctly, you *must* set the following environment variables:
 
